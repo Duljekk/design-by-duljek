@@ -1,3 +1,15 @@
+'use client';
+
+import { useState } from 'react';
+import { AnimatePresence } from 'motion/react';
+import { LinkPreviewCard } from './LinkPreviewCard';
+import type { LinkPreview } from './LinkPreviewCard';
+import { useCanHover } from '../../lib/useCanHover';
+import previewData from '../../lib/link-previews.json';
+
+/* Scraped at build time by scripts/fetch-link-previews.mjs. */
+const previews = previewData as Record<string, LinkPreview | undefined>;
+
 interface Props {
 	title: string;
 	date: string;
@@ -5,6 +17,9 @@ interface Props {
 }
 
 export function ProjectItem({ title, date, href }: Props) {
+	const [isActive, setIsActive] = useState(false);
+	const canHover = useCanHover();
+
 	const className =
 		'group flex items-center rounded-xl py-2.5 pl-3 pr-3.5 transition-colors duration-200 hover:bg-stone-100';
 
@@ -24,13 +39,29 @@ export function ProjectItem({ title, date, href }: Props) {
 		</>
 	);
 
-	if (href) {
-		return (
-			<a href={href} target="_blank" rel="noopener noreferrer" className={className}>
-				{body}
-			</a>
-		);
+	if (!href) {
+		return <div className={className}>{body}</div>;
 	}
 
-	return <div className={className}>{body}</div>;
+	const preview = previews[href];
+
+	return (
+		<div className="relative">
+			<a
+				href={href}
+				target="_blank"
+				rel="noopener noreferrer"
+				className={className}
+				onPointerEnter={() => setIsActive(true)}
+				onPointerLeave={() => setIsActive(false)}
+				onFocus={() => setIsActive(true)}
+				onBlur={() => setIsActive(false)}
+			>
+				{body}
+			</a>
+			<AnimatePresence>
+				{preview && canHover && isActive && <LinkPreviewCard preview={preview} />}
+			</AnimatePresence>
+		</div>
+	);
 }

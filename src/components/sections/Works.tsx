@@ -4,13 +4,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { SectionHeading } from '../ui/SectionHeading';
 import { ProjectItem } from '../ui/ProjectItem';
 import { fadeUp, staggerContainer, viewportOnce } from '../motion/variants';
-
-const works: { title: string; date: string; href?: string }[] = [
-	{ title: 'Fuel Me', date: 'March 2026 - Now', href: 'https://fuel.me' },
-	{ title: 'Nano', date: 'Feb 2026' },
-	{ title: 'MorvaHR', date: 'Nov 2025 - Jan 2026' },
-	{ title: 'Nova', date: 'Sep - Nov 2025' },
-];
+import { works } from '../../lib/projects';
 
 export function Works() {
 	const reduceMotion = useReducedMotion();

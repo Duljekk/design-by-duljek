@@ -1,0 +1,19 @@
+{
+	"https://fuel.me": {
+		"url": "https://fuel.me",
+		"domain": "fuel.me",
+		"title": "Intelligent Fuel Procurement Platform | Fuel Me",
+		"description": "Stop overpaying for fuel. Fuel Me's AI-powered marketplace offers smart ordering, full visibility, and automated fuel deliveries. Book a demo today.",
+		"image": "/previews/og-3a9a666ae645.webp",
+		"favicon": "/previews/icon-c6a3ebd6cf29.png",
+		"fetchedAt": "2026-08-20T19:01:47.462Z"
+	},
+	"https://ncaturns24.framer.website/": {
+		"url": "https://ncaturns24.framer.website/",
+		"domain": "ncaturns24.framer.website",
+		"title": "My Framer Site",
+		"description": "Made with Framer",
+		"favicon": "/previews/icon-d71c258c0ff4.png",
+		"fetchedAt": "2026-08-20T19:01:47.570Z"
+	}
+}

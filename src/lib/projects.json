@@ -1,0 +1,15 @@
+{
+	"works": [
+		{ "title": "Fuel Me", "date": "March 2026 - Now", "href": "https://fuel.me" },
+		{ "title": "Nano", "date": "Feb 2026" },
+		{ "title": "MorvaHR", "date": "Nov 2025 - Jan 2026" },
+		{ "title": "Nova", "date": "Sep - Nov 2025" }
+	],
+	"personalProjects": [
+		{
+			"title": "Nca Turns 24th",
+			"date": "March 2026 - Now",
+			"href": "https://ncaturns24.framer.website/"
+		}
+	]
+}

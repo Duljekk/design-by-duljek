@@ -4,10 +4,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { SectionHeading } from '../ui/SectionHeading';
 import { ProjectItem } from '../ui/ProjectItem';
 import { fadeUp, staggerContainer, viewportOnce } from '../motion/variants';
-
-const projects = [
-	{ title: 'Nca Turns 24th', date: 'March 2026 - Now', href: 'https://ncaturns24.framer.website/' },
-];
+import { personalProjects as projects } from '../../lib/projects';
 
 export function PersonalProjects() {
 	const reduceMotion = useReducedMotion();
