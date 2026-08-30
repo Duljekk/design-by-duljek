@@ -1,7 +1,3 @@
-'use client';
-
-import { HoverCard } from './HoverCard';
-
 export interface LinkPreview {
 	url: string;
 	domain: string;
@@ -18,9 +14,11 @@ interface Props {
 	preview: LinkPreview;
 }
 
+/* Content only — the shared card shell (border, radius, shadow) is provided
+ * by ProjectList's single morphing overlay. */
 export function LinkPreviewCard({ preview }: Props) {
 	return (
-		<HoverCard className="w-80">
+		<div className="w-80">
 			{/* 40/21 is the 1200x630 OG standard — aspect-video (16/9) crops it. */}
 			{preview.image && (
 				<div className="aspect-[40/21] w-full overflow-hidden border-b border-stone-200 bg-stone-100">
@@ -53,6 +51,6 @@ export function LinkPreviewCard({ preview }: Props) {
 					<p className="line-clamp-2 text-sm text-stone-500">{preview.description}</p>
 				)}
 			</div>
-		</HoverCard>
+		</div>
 	);
 }

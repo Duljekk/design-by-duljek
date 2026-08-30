@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from 'motion/react';
 import { SectionHeading } from '../ui/SectionHeading';
-import { ProjectItem } from '../ui/ProjectItem';
+import { ProjectList } from './ProjectList';
 import { fadeUp, staggerContainer, viewportOnce } from '../motion/variants';
 import { works } from '../../lib/projects';
 
@@ -18,18 +18,12 @@ export function Works() {
 			viewport={viewportOnce}
 		>
 			<motion.div className="px-3" variants={fadeUp}>
-				<SectionHeading title="Works">
+				<SectionHeading title="Recent Works">
 					Things I&rsquo;ve designed and built at{' '}
 					<span className="font-medium text-stone-800">Morva Labs</span>
 				</SectionHeading>
 			</motion.div>
-			<motion.div className="flex flex-col" variants={staggerContainer}>
-				{works.map((work) => (
-					<motion.div key={work.title} variants={fadeUp}>
-						<ProjectItem title={work.title} date={work.date} href={work.href} />
-					</motion.div>
-				))}
-			</motion.div>
+			<ProjectList items={works} />
 		</motion.section>
 	);
 }

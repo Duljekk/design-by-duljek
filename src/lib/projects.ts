@@ -1,9 +1,19 @@
 import data from './projects.json';
 
+export interface Shot {
+	src: string;
+	srcSet?: string;
+	width: number;
+	height: number;
+	alt: string;
+	href?: string;
+}
+
 export interface Project {
 	title: string;
 	date: string;
 	href?: string;
+	shots?: Shot[];
 }
 
 /* Single source of truth for both sections, and for the build-time

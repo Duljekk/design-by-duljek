@@ -1,9 +1,67 @@
 {
 	"works": [
 		{ "title": "Fuel Me", "date": "March 2026 - Now", "href": "https://fuel.me" },
-		{ "title": "Nano", "date": "Feb 2026" },
+		{
+			"title": "Nano",
+			"date": "Feb 2026",
+			"shots": [
+				{
+					"src": "/shots/nano/nano_1_1x.webp",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nano AI security system"
+				},
+				{
+					"src": "/shots/nano/nano_2_1x.webp",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nano AI security system"
+				},
+				{
+					"src": "/shots/nano/nano_3_1x.webp",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nano AI security system"
+				},
+				{
+					"src": "/shots/nano/nano_4_1x.webp",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nano AI security system"
+				}
+			]
+		},
 		{ "title": "MorvaHR", "date": "Nov 2025 - Jan 2026" },
-		{ "title": "Nova", "date": "Sep - Nov 2025" }
+		{
+			"title": "Nova",
+			"date": "Sep - Nov 2025",
+			"shots": [
+				{
+					"src": "/shots/nova/nova_1_1x.webp",
+					"srcSet": "/shots/nova/nova_1_1x.webp 1x, /shots/nova/nova_1_2x.webp 2x, /shots/nova/nova_1_3x.webp 3x",
+					"width": 432,
+					"height": 310,
+					"alt": "Nova landing page",
+					"href": "https://dribbble.com/shots/26957164-Nova-AI-Chatbot-Page"
+				},
+				{
+					"src": "/shots/nova/nova_2_1x.webp",
+					"srcSet": "/shots/nova/nova_2_1x.webp 1x, /shots/nova/nova_2_2x.webp 2x, /shots/nova/nova_2_3x.webp 3x",
+					"width": 432,
+					"height": 310,
+					"alt": "Nova AI chatbot",
+					"href": "https://dribbble.com/shots/26957164-Nova-AI-Chatbot-Page"
+				},
+				{
+					"src": "/shots/nova/nova_3_1x.webp",
+					"srcSet": "/shots/nova/nova_3_1x.webp 1x, /shots/nova/nova_3_2x.webp 2x, /shots/nova/nova_3_3x.webp 3x",
+					"width": 432,
+					"height": 310,
+					"alt": "Nova dashboard",
+					"href": "https://dribbble.com/shots/26957164-Nova-AI-Chatbot-Page"
+				}
+			]
+		}
 	],
 	"personalProjects": [
 		{
