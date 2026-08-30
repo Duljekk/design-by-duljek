@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^6.0.2",
+    "@astrojs/vercel": "^11.0.8",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
@@ -25,6 +26,8 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "sharp": "^0.35.3"
+    "@astrojs/check": "^0.9.10",
+    "sharp": "^0.35.3",
+    "typescript": "^6.0.3"
   }
 }

@@ -4,6 +4,7 @@ import { Hero } from '../components/sections/Hero';
 import { Works } from '../components/sections/Works';
 import { PersonalProjects } from '../components/sections/PersonalProjects';
 import { Tools } from '../components/sections/Tools';
+import { AssistantWidget } from '../components/assistant/AssistantWidget';
 import { Container } from '../components/ui/Container';
 import { Divider } from '../components/ui/Divider';
 ---
@@ -22,4 +23,5 @@ import { Divider } from '../components/ui/Divider';
 			</div>
 		</Container>
 	</main>
+	<AssistantWidget client:idle />
 </Layout>

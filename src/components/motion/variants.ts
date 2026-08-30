@@ -51,3 +51,11 @@ export const hoverCard: Variants = {
 	visible: { opacity: 1, y: 0, scale: 1, transition: SPRING.snappy },
 	exit: { opacity: 0, y: 4, scale: 0.98, transition: { duration: 0.12, ease: 'easeOut' } },
 };
+
+/* Chat widget panel: grows up and out from the launcher corner.
+ * Like hoverCard, exit is a quick duration fade so closing feels immediate. */
+export const chatPanel: Variants = {
+	hidden: { opacity: 0, y: 16, scale: 0.97 },
+	visible: { opacity: 1, y: 0, scale: 1, transition: SPRING.snappy },
+	exit: { opacity: 0, y: 10, scale: 0.98, transition: { duration: 0.14, ease: 'easeOut' } },
+};
