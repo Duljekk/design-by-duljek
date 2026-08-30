@@ -8,12 +8,12 @@ export interface Tool {
 }
 
 export const tools: Tool[] = [
-	{ name: 'Framer', icon: 'framer.svg', description: '', background: 'bg-black' },
-	{ name: 'Claude', icon: 'claude.svg', description: '', background: 'bg-[#d97757]' },
-	{ name: 'MCP', icon: 'mcp.svg', description: '', background: 'bg-white' },
-	{ name: 'Three.js', icon: 'cube.svg', description: '', background: 'bg-black' },
-	{ name: 'Jitter', icon: 'jitter.svg', description: '' },
-	{ name: 'Supabase', icon: 'supabase.svg', description: '', background: 'bg-[#1c1c1c]' },
-	{ name: 'Tailwind', icon: 'tailwind.svg', description: '', background: 'bg-white' },
-	{ name: 'Vercel', icon: 'vercel.svg', description: '', background: 'bg-black' },
+	{ name: 'Framer', icon: 'framer.svg', description: 'Where most of my ideas go from static to shippable.', background: 'bg-black' },
+	{ name: 'Claude', icon: 'claude.svg', description: 'My partner for thinking through ideas and writing code.', background: 'bg-[#d97757]' },
+	{ name: 'MCP', icon: 'mcp.svg', description: 'Connects my tools together so ideas move faster.', background: 'bg-white' },
+	{ name: 'Cursor', icon: 'cube.svg', description: 'My partner for writing and shipping code.', background: 'bg-black' },
+	{ name: 'Jitter', icon: 'jitter.svg', description: 'For motion that makes interfaces feel alive.' },
+	{ name: 'Supabase', icon: 'supabase.svg', description: 'Backend and auth, handled without slowing me down.', background: 'bg-[#1c1c1c]' },
+	{ name: 'Tailwind', icon: 'tailwind.svg', description: 'Fast, consistent styling without leaving the code.', background: 'bg-white' },
+	{ name: 'Vercel', icon: 'vercel.svg', description: 'Ship it, see it live, iterate.', background: 'bg-black' },
 ];
