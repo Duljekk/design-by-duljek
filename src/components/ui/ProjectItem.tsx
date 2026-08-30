@@ -1,27 +1,18 @@
-'use client';
-
-import { useState } from 'react';
-import { AnimatePresence } from 'motion/react';
-import { LinkPreviewCard } from './LinkPreviewCard';
-import type { LinkPreview } from './LinkPreviewCard';
-import { useCanHover } from '../../lib/useCanHover';
-import previewData from '../../lib/link-previews.json';
-
-/* Scraped at build time by scripts/fetch-link-previews.mjs. */
-const previews = previewData as Record<string, LinkPreview | undefined>;
-
 interface Props {
 	title: string;
 	date: string;
 	href?: string;
+	active: boolean;
 }
 
-export function ProjectItem({ title, date, href }: Props) {
-	const [isActive, setIsActive] = useState(false);
-	const canHover = useCanHover();
-
-	const className =
-		'group flex items-center rounded-xl py-2.5 pl-3 pr-3.5 transition-colors duration-200 hover:bg-stone-100';
+/* Presentational row only — the hover overlay is owned by ProjectList, which
+ * keeps a single shared card and passes `active` down so this row can reflect
+ * it. `active` mirrors the hover highlight so the row stays "lit" while the
+ * pointer is over the floating card rather than the row itself. */
+export function ProjectItem({ title, date, href, active }: Props) {
+	const className = `group flex items-center rounded-xl py-2.5 pl-3 pr-3.5 transition-colors duration-200 hover:bg-stone-100 ${
+		active ? 'bg-stone-100' : ''
+	}`;
 
 	const body = (
 		<>
@@ -34,34 +25,22 @@ export function ProjectItem({ title, date, href }: Props) {
 				alt=""
 				width={16}
 				height={16}
-				className="size-4 shrink-0 -translate-x-1 opacity-0 transition duration-200 group-hover:translate-x-0 group-hover:opacity-100"
+				className={`size-4 shrink-0 transition duration-200 ${
+					active
+						? 'translate-x-0 opacity-100'
+						: '-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'
+				}`}
 			/>
 		</>
 	);
 
-	if (!href) {
-		return <div className={className}>{body}</div>;
-	}
-
-	const preview = previews[href];
-
-	return (
-		<div className="relative">
-			<a
-				href={href}
-				target="_blank"
-				rel="noopener noreferrer"
-				className={className}
-				onPointerEnter={() => setIsActive(true)}
-				onPointerLeave={() => setIsActive(false)}
-				onFocus={() => setIsActive(true)}
-				onBlur={() => setIsActive(false)}
-			>
+	if (href) {
+		return (
+			<a href={href} target="_blank" rel="noopener noreferrer" className={className}>
 				{body}
 			</a>
-			<AnimatePresence>
-				{preview && canHover && isActive && <LinkPreviewCard preview={preview} />}
-			</AnimatePresence>
-		</div>
-	);
+		);
+	}
+
+	return <div className={className}>{body}</div>;
 }
