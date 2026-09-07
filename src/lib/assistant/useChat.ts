@@ -39,7 +39,11 @@ export function useChat() {
 			if (!trimmed || isStreaming) return;
 
 			const history = messages.slice(-HISTORY_SENT);
-			setMessages((prev) => [...prev, { role: 'user', content: trimmed }, { role: 'assistant', content: '' }]);
+			setMessages((prev) => [
+				...prev,
+				{ role: 'user', content: trimmed },
+				{ role: 'assistant', content: '' },
+			]);
 			setIsStreaming(true);
 
 			const controller = new AbortController();
@@ -85,7 +89,10 @@ export function useChat() {
 						const next = [...prev];
 						const last = next[next.length - 1];
 						if (last?.role === 'assistant') {
-							next[next.length - 1] = { ...last, content: last.content || (error as Error).message };
+							next[next.length - 1] = {
+								...last,
+								content: last.content || (error as Error).message,
+							};
 						}
 						return next;
 					});

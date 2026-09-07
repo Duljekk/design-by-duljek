@@ -32,6 +32,10 @@ I also enjoy working across the line between design and code, using Framer and m
 
 *(Project items live in `src/lib/projects.json` — not duplicated here.)*
 
+**Locked shot overlay** (shown on hover for shots with no `href`, e.g. MorvaHR):
+
+> This one's private — want to see it? Just ask me directly.
+
 ---
 
 ## Personal Projects
@@ -50,11 +54,12 @@ I also enjoy working across the line between design and code, using Framer and m
 
 **Tool list:**
 
-1. **Framer** — Where most of my ideas go from static to shippable.
+1. **Figma** — Where every screen gets figured out before it gets built.
 2. **Claude** — My partner for thinking through ideas and writing code.
 3. **MCP** — Connects my tools together so ideas move faster.
-4. **Cursor** — My partner for writing and shipping code.
-5. **Jitter** — For motion that makes interfaces feel alive.
-6. **Supabase** — Backend and auth, handled without slowing me down.
-7. **Tailwind** — Fast, consistent styling without leaving the code.
-8. **Vercel** — Ship it, see it live, iterate.
+4. **Framer** — Where most of my ideas go from static to shippable.
+5. **Cursor** — My partner for writing and shipping code.
+6. **Jitter** — For motion that makes interfaces feel alive.
+7. **Supabase** — Backend and auth, handled without slowing me down.
+8. **Tailwind** — Fast, consistent styling without leaving the code.
+9. **Vercel** — Ship it, see it live, iterate.

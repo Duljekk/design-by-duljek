@@ -29,7 +29,96 @@
 }
 
 @layer base {
+	/* Smooth in-page navigation (TOC links, hash jumps). Gated on reduced-motion
+	 * so it matches how the rest of the site treats animation. `scroll-mt` on
+	 * headings (see .prose) keeps anchored targets clear of the sticky nav. */
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+
 	body {
 		@apply bg-bone-white font-sans text-stone-950 antialiased;
+	}
+}
+
+/* ─────────────────────────────────────────────────────────
+ * PROSE — rendered Markdown for blog posts.
+ *
+ * No @tailwindcss/typography plugin here; these styles are scoped tightly to
+ * `.prose` so they only apply to article bodies. Palette and rhythm follow the
+ * rest of the site (stone scale, Switzer, base measure). `scroll-mt` keeps
+ * heading anchors clear of the sticky top nav when jumped to from the TOC.
+ * ───────────────────────────────────────────────────────── */
+@layer components {
+	.prose {
+		@apply text-base leading-7 text-stone-600;
+	}
+
+	.prose > * + * {
+		@apply mt-5;
+	}
+
+	.prose h2 {
+		@apply mt-10 scroll-mt-24 text-base font-medium text-stone-900;
+	}
+
+	.prose h3 {
+		@apply mt-8 scroll-mt-24 text-base font-medium text-stone-800;
+	}
+
+	.prose h2 + *,
+	.prose h3 + * {
+		@apply mt-3;
+	}
+
+	.prose strong {
+		@apply font-medium text-stone-800;
+	}
+
+	.prose a {
+		@apply font-medium text-stone-900 underline decoration-stone-300 underline-offset-2 transition-colors hover:decoration-stone-500;
+	}
+
+	.prose ul,
+	.prose ol {
+		@apply flex flex-col gap-2 pl-5;
+	}
+
+	.prose ul {
+		@apply list-disc marker:text-stone-300;
+	}
+
+	.prose ol {
+		@apply list-decimal marker:text-stone-400;
+	}
+
+	.prose li::marker {
+		@apply text-sm;
+	}
+
+	.prose blockquote {
+		@apply border-l-2 border-stone-200 pl-4 text-stone-500 italic;
+	}
+
+	.prose code {
+		@apply rounded-md bg-stone-100 px-1.5 py-0.5 font-mono text-[0.85em] text-stone-700;
+	}
+
+	.prose pre {
+		@apply overflow-x-auto rounded-xl border border-stone-200 bg-stone-950 p-4 text-sm leading-6;
+	}
+
+	.prose pre code {
+		@apply bg-transparent p-0 text-stone-100;
+	}
+
+	.prose img {
+		@apply rounded-xl border border-stone-200;
+	}
+
+	.prose hr {
+		@apply border-stone-200;
 	}
 }

@@ -1,21 +1,24 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
 
-import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()]
-  },
+	site: 'https://design-by-duljek.site',
 
-  integrations: [react()],
+	vite: {
+		plugins: [tailwindcss()],
+	},
 
-  adapter: vercel(),
+	integrations: [react(), sitemap()],
 
-  server: {
-    host: true
-  }
+	adapter: vercel(),
+
+	server: {
+		host: true,
+	},
 });

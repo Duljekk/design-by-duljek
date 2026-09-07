@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { chatPanel, popIn } from '../motion/variants';
+import { useEffect, useRef, useState } from 'react';
 import { useChat } from '../../lib/assistant/useChat';
-import { MessageList } from './MessageList';
+import { chatPanel, popIn } from '../motion/variants';
 import { ChatInput } from './ChatInput';
+import { MessageList } from './MessageList';
 import { SuggestionChips } from './SuggestionChips';
 
 const SUGGESTED_QUESTIONS = [
@@ -21,22 +21,48 @@ export function AssistantWidget() {
 	const shouldReduceMotion = useReducedMotion();
 	const launcherRef = useRef<HTMLButtonElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
-
-	useEffect(() => {
-		if (!open) return;
-		inputRef.current?.focus();
-		const onKeyDown = (event: KeyboardEvent) => {
-			if (event.key === 'Escape') setOpen(false);
-		};
-		window.addEventListener('keydown', onKeyDown);
-		return () => window.removeEventListener('keydown', onKeyDown);
-	}, [open]);
+	const panelRef = useRef<HTMLDivElement>(null);
 
 	const close = () => {
 		stop();
 		setOpen(false);
 		launcherRef.current?.focus();
 	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: `close` is recreated every render; re-running this effect only needs to track `open`.
+	useEffect(() => {
+		if (!open) return;
+		inputRef.current?.focus();
+
+		const onKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				close();
+				return;
+			}
+			if (event.key !== 'Tab') return;
+
+			const panel = panelRef.current;
+			if (!panel) return;
+			const focusable = panel.querySelectorAll<HTMLElement>(
+				'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+			);
+			if (focusable.length === 0) return;
+
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+			const active = document.activeElement;
+
+			if (event.shiftKey && active === first) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && active === last) {
+				event.preventDefault();
+				first.focus();
+			}
+		};
+		window.addEventListener('keydown', onKeyDown);
+		return () => window.removeEventListener('keydown', onKeyDown);
+	}, [open]);
 
 	const ask = (question: string) => {
 		void send(question);
@@ -75,7 +101,9 @@ export function AssistantWidget() {
 				{open && (
 					<motion.div
 						key="panel"
+						ref={panelRef}
 						role="dialog"
+						aria-modal="true"
 						aria-label="Ask about Duljek"
 						className="fixed inset-x-3 bottom-3 z-50 flex h-[min(560px,calc(100dvh-5rem))] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-bone-white shadow-xl shadow-stone-900/15 sm:inset-x-auto sm:bottom-5 sm:right-5 sm:w-[380px]"
 						initial={shouldReduceMotion ? 'visible' : 'hidden'}
@@ -86,7 +114,9 @@ export function AssistantWidget() {
 						<header className="flex items-center justify-between border-b border-stone-200 px-4 py-3">
 							<div className="flex flex-col">
 								<span className="text-sm font-medium text-stone-950">Ask me anything</span>
-								<span className="text-xs text-stone-500">AI assistant, answered from my profile</span>
+								<span className="text-xs text-stone-500">
+									AI assistant, answered from my profile
+								</span>
 							</div>
 							<button
 								type="button"

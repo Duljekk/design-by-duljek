@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
-import { motion, useAnimate, useReducedMotion } from 'motion/react';
 import type { Transition } from 'motion/react';
+import { motion, useAnimate, useReducedMotion } from 'motion/react';
+import { useEffect } from 'react';
 import { Logo } from './Logo';
 
 /* ─────────────────────────────────────────────────────────
@@ -55,7 +55,7 @@ export function MorvaLabs() {
 		const controls = animateShine(
 			shineScope.current,
 			{ x: [-distance, distance, distance], y: [-distance, distance, distance] },
-			shineTransition
+			shineTransition,
 		);
 
 		return () => controls.stop();
@@ -71,7 +71,7 @@ export function MorvaLabs() {
 
 	return (
 		<motion.a
-			href="https://morvalabs.com"
+			href="https://dribbble.com/morvalabs"
 			target="_blank"
 			rel="noopener noreferrer"
 			className="group inline-flex items-center gap-1.5"

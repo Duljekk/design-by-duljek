@@ -149,7 +149,8 @@ async function downloadImage(url, kind) {
 
 	const type = (res.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase();
 	// Sites without an image often serve an HTML page here — never save that as one.
-	if (!type.startsWith('image/')) throw new Error(`${kind} image was ${type || 'untyped'}, not an image`);
+	if (!type.startsWith('image/'))
+		throw new Error(`${kind} image was ${type || 'untyped'}, not an image`);
 
 	const buffer = Buffer.from(await res.arrayBuffer());
 	if (buffer.byteLength > MAX_IMAGE_BYTES) throw new Error(`${kind} image too large`);
@@ -161,10 +162,24 @@ async function downloadImage(url, kind) {
 	await mkdir(IMAGE_DIR, { recursive: true });
 	await writeFile(path.join(IMAGE_DIR, name), data);
 
-	return `${PUBLIC_PREFIX}/${name}`;
+	return { src: `${PUBLIC_PREFIX}/${name}`, ...(await measure(data, kind)) };
 }
 
-async function scrape(href) {
+/* The card sizes its image slot from these, so a square or banner-shaped OG
+ * image isn't cropped into the 1200x630 default. Dimensions are a nicety —
+ * if sharp can't read them the card just falls back to the OG ratio. */
+async function measure(data, kind) {
+	if (kind !== 'og') return {};
+	try {
+		const { default: sharp } = await import('sharp');
+		const { width, height } = await sharp(data).metadata();
+		return width && height ? { width, height } : {};
+	} catch {
+		return {};
+	}
+}
+
+async function scrape(href, ownImage) {
 	const res = await fetchWithTimeout(href, 'text/html,application/xhtml+xml');
 	if (!res.ok) throw new Error(`page responded ${res.status}`);
 
@@ -179,14 +194,23 @@ async function scrape(href) {
 
 	const docTitle = decodeEntities(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? '').trim();
 
-	const title = firstNonEmpty(meta['og:title'], meta['twitter:title'], docTitle, new URL(pageUrl).hostname);
-	const description = firstNonEmpty(meta['og:description'], meta['twitter:description'], meta.description);
-	const imageUrl = absolute(firstNonEmpty(meta['og:image'], meta['twitter:image']), pageUrl);
+	const title = firstNonEmpty(
+		meta['og:title'],
+		meta['twitter:title'],
+		docTitle,
+		new URL(pageUrl).hostname,
+	);
+	const description = firstNonEmpty(
+		meta['og:description'],
+		meta['twitter:description'],
+		meta.description,
+	);
+	const imageUrls = ogImageCandidates(firstNonEmpty(meta['og:image'], meta['twitter:image']), pageUrl);
 	const faviconUrl = pickFavicon(collectTags(html, 'link'), pageUrl);
 
 	// A missing/failed image degrades to a text-only card rather than failing the entry.
 	const [image, favicon] = await Promise.all([
-		downloadImage(imageUrl, 'og').catch((error) => {
+		(ownImage ? localImage(ownImage) : downloadFirstImage(imageUrls, 'og')).catch((error) => {
 			warn(href, `og:image skipped — ${error.message}`);
 			return undefined;
 		}),
@@ -201,10 +225,55 @@ async function scrape(href) {
 		domain: new URL(pageUrl).hostname.replace(/^www\./, ''),
 		title,
 		description,
-		image,
-		favicon,
+		image: image?.src,
+		imageWidth: image?.width,
+		imageHeight: image?.height,
+		favicon: favicon?.src,
 		fetchedAt: new Date().toISOString(),
 	};
+}
+
+/* Sites get their own og:image URL wrong more often than you'd think — a stale
+ * domain, or a Next.js metadataBase that renders as `https://undefined/...`.
+ * The asset is almost always still served from the page's own origin, so try
+ * the declared URL first and then the same path on this host. */
+function ogImageCandidates(declared, pageUrl) {
+	const first = absolute(declared, pageUrl);
+	if (!first) return [];
+
+	try {
+		const origin = new URL(pageUrl);
+		const sameOrigin = new URL(first);
+		sameOrigin.protocol = origin.protocol;
+		sameOrigin.host = origin.host;
+		const second = sameOrigin.toString();
+		return second === first ? [first] : [first, second];
+	} catch {
+		return [first];
+	}
+}
+
+async function downloadFirstImage(urls, kind) {
+	let lastError;
+	for (const url of urls) {
+		try {
+			return await downloadImage(url, kind);
+		} catch (error) {
+			lastError = error;
+		}
+	}
+	if (lastError) throw lastError;
+	return undefined;
+}
+
+/* `previewImage` on a project points at a file we ship in public/ — used when
+ * the target site publishes no og:image, or one we'd rather not show. It is
+ * served as-is (no refetch, no re-encode); only its dimensions are read so the
+ * card can size its image slot. */
+async function localImage(src) {
+	const file = path.join(ROOT, 'public', src.replace(/^\//, ''));
+	if (!existsSync(file)) throw new Error(`previewImage ${src} not found in public/`);
+	return { src, ...(await measure(await readFile(file), 'og')) };
 }
 
 function warn(href, message) {
@@ -221,19 +290,21 @@ async function readJson(file, fallback) {
 }
 
 async function main() {
-	const projects = await readJson(PROJECTS, { works: [], personalProjects: [] });
+	const projects = await readJson(PROJECTS, { works: [], pastWorks: [], personalProjects: [] });
 	const previous = await readJson(MANIFEST, {});
 
-	const hrefs = [...(projects.works ?? []), ...(projects.personalProjects ?? [])]
-		.map((project) => project.href)
-		.filter(Boolean);
+	const linked = [
+		...(projects.works ?? []),
+		...(projects.pastWorks ?? []),
+		...(projects.personalProjects ?? []),
+	].filter((project) => project.href);
 
-	console.log(`[link-previews] fetching ${hrefs.length} link(s)`);
+	console.log(`[link-previews] fetching ${linked.length} link(s)`);
 
 	const manifest = {};
-	for (const href of hrefs) {
+	for (const { href, previewImage } of linked) {
 		try {
-			manifest[href] = await scrape(href);
+			manifest[href] = await scrape(href, previewImage);
 			console.log(`  ✓ ${href}`);
 		} catch (error) {
 			if (previous[href]) {

@@ -29,7 +29,9 @@ pnpm-debug.log*
 .claude/
 
 # raw design-source exports (deployable copies live in public/shots/)
-/nova_1/
-/nova_1.zip
+/nova_*/
+/nova_*.zip
 /nano_*/
 /nano_*.zip
+/morva_hr/
+/morva_hr.zip

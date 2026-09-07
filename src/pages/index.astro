@@ -1,12 +1,24 @@
 ---
-import Layout from '../layouts/Layout.astro';
+// AI Chatbot assistant — temporarily disabled
+// import { AssistantWidget } from '../components/assistant/AssistantWidget';
+import { Footer } from '../components/sections/Footer';
 import { Hero } from '../components/sections/Hero';
-import { Works } from '../components/sections/Works';
+import { PastWorks } from '../components/sections/PastWorks';
 import { PersonalProjects } from '../components/sections/PersonalProjects';
 import { Tools } from '../components/sections/Tools';
-import { AssistantWidget } from '../components/assistant/AssistantWidget';
+import { Works } from '../components/sections/Works';
+// Blog / Writing section — temporarily disabled
+// import { Writing, type WritingItem } from '../components/sections/Writing';
 import { Container } from '../components/ui/Container';
 import { Divider } from '../components/ui/Divider';
+import Layout from '../layouts/Layout.astro';
+// import { formatDate, getPublishedPosts } from '../lib/blog';
+
+// const latestPosts: WritingItem[] = (await getPublishedPosts()).slice(0, 3).map((post) => ({
+// 	slug: post.id,
+// 	title: post.data.title,
+// 	date: formatDate(post.data.date),
+// }));
 ---
 
 <Layout title="Design by Duljek">
@@ -14,14 +26,30 @@ import { Divider } from '../components/ui/Divider';
 		<Container className="my-auto py-10 sm:py-15">
 			<div class="flex flex-col gap-6">
 				<Hero client:load />
-				<Divider />
+				<Divider client:visible />
 				<Works client:load />
-				<Divider />
+				<Divider client:visible />
+				<PastWorks client:visible />
+				<Divider client:visible />
 				<PersonalProjects client:load />
-				<Divider />
+				<Divider client:visible />
 				<Tools client:load />
+				{
+					/* Blog / Writing section — temporarily disabled
+					latestPosts.length > 0 && (
+						<>
+							<Divider client:visible />
+							<Writing items={latestPosts} client:visible />
+						</>
+					)
+					*/
+				}
+				<Divider client:visible />
+				<Footer client:visible />
 			</div>
 		</Container>
 	</main>
+	{/* AI Chatbot assistant — temporarily disabled
 	<AssistantWidget client:idle />
+	*/}
 </Layout>

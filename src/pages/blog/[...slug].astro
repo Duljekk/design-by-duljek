@@ -1,0 +1,69 @@
+---
+import { render } from 'astro:content';
+import { Comments } from '../../components/blog/Comments';
+import { ShareButtons } from '../../components/blog/ShareButtons';
+import { TableOfContents } from '../../components/blog/TableOfContents';
+import { Container } from '../../components/ui/Container';
+import { Divider } from '../../components/ui/Divider';
+import { Tag } from '../../components/ui/Tag';
+import { TopNav } from '../../components/ui/TopNav';
+import Layout from '../../layouts/Layout.astro';
+import { formatDate, getPublishedPosts, readingTime } from '../../lib/blog';
+
+export async function getStaticPaths() {
+	// Blog section temporarily disabled — no post pages are generated.
+	const BLOG_DISABLED = true;
+	const posts = BLOG_DISABLED ? [] : await getPublishedPosts();
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const minutes = readingTime(post.body);
+---
+
+<Layout title={`${post.data.title} — Design by Duljek`} description={post.data.description}>
+	<main class="flex min-h-dvh flex-col">
+		<Container className="py-10 sm:py-15">
+			<div class="flex flex-col gap-8">
+				<TopNav href="/blog" label="All writing" />
+
+				<article class="flex flex-col gap-8">
+					<header class="flex flex-col gap-3 px-3">
+						{
+							post.data.tags.length > 0 && (
+								<div class="flex flex-wrap gap-1.5">
+									{post.data.tags.map((tag) => (
+										<Tag>{tag}</Tag>
+									))}
+								</div>
+							)
+						}
+						<h1 class="text-xl font-medium tracking-tight text-stone-950">
+							{post.data.title}
+						</h1>
+						<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-stone-500">
+							<time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+							<span aria-hidden="true" class="text-stone-300">&middot;</span>
+							<span>{minutes} min read</span>
+						</div>
+					</header>
+
+					<TableOfContents items={headings} client:load />
+
+					<div class="prose px-3">
+						<Content />
+					</div>
+				</article>
+
+				<Divider client:visible />
+				<ShareButtons title={post.data.title} client:visible />
+				<Divider client:visible />
+				<Comments slug={post.id} client:visible />
+			</div>
+		</Container>
+	</main>
+</Layout>

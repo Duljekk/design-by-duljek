@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { buildSystemPrompt } from '../../lib/assistant/prompt';
 import { classifyScope, REFUSAL_MESSAGE } from '../../lib/assistant/guardrail';
+import { buildSystemPrompt } from '../../lib/assistant/prompt';
 import type { ChatMessage, ChatRequestBody } from '../../lib/assistant/types';
 
 export const prerender = false;
@@ -103,6 +103,9 @@ function captureQuestion(body: ChatRequestBody, inScope: boolean | null, refusal
 }
 
 export const POST: APIRoute = async ({ request }) => {
+	// AI Chatbot assistant temporarily disabled.
+	return json({ error: 'Assistant is currently disabled.' }, 404);
+
 	const apiKey = import.meta.env.GEMINI_API_KEY;
 	if (!apiKey) {
 		return json({ error: 'Assistant is not configured yet. Try again later.' }, 503);

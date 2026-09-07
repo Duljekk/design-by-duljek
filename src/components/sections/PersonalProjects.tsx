@@ -1,10 +1,10 @@
 'use client';
 
 import { motion, useReducedMotion } from 'motion/react';
+import { personalProjects as projects } from '../../lib/projects';
+import { fadeUp, staggerContainer, viewportOnce } from '../motion/variants';
 import { SectionHeading } from '../ui/SectionHeading';
 import { ProjectList } from './ProjectList';
-import { fadeUp, staggerContainer, viewportOnce } from '../motion/variants';
-import { personalProjects as projects } from '../../lib/projects';
 
 export function PersonalProjects() {
 	const reduceMotion = useReducedMotion();

@@ -46,14 +46,17 @@ export function MessageList({ messages }: Props) {
 								? 'max-w-[85%] self-end rounded-2xl rounded-br-md bg-stone-950 px-3.5 py-2 text-sm text-bone-white'
 								: 'max-w-[85%] self-start rounded-2xl rounded-bl-md bg-stone-100 px-3.5 py-2 text-sm text-stone-900'
 						}
-						{...(isLast ? { 'aria-live': 'polite' as const } : {})}
+						{...(isLast ? { role: 'status' as const } : {})}
 					>
 						{awaitingReply ? (
-							<span className="inline-flex gap-1 py-1" aria-label="Assistant is typing">
-								<span className="size-1.5 animate-pulse rounded-full bg-stone-500" />
-								<span className="size-1.5 animate-pulse rounded-full bg-stone-500 [animation-delay:150ms]" />
-								<span className="size-1.5 animate-pulse rounded-full bg-stone-500 [animation-delay:300ms]" />
-							</span>
+							<>
+								<span className="inline-flex gap-1 py-1" aria-hidden="true">
+									<span className="size-1.5 animate-pulse rounded-full bg-stone-500" />
+									<span className="size-1.5 animate-pulse rounded-full bg-stone-500 [animation-delay:150ms]" />
+									<span className="size-1.5 animate-pulse rounded-full bg-stone-500 [animation-delay:300ms]" />
+								</span>
+								<span className="sr-only">Assistant is typing</span>
+							</>
 						) : (
 							message.content
 						)}

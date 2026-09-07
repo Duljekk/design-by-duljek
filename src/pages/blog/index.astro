@@ -1,0 +1,47 @@
+---
+// Blog section temporarily disabled — route returns 404 until re-enabled.
+import { PostList, type PostSummary } from '../../components/blog/PostList';
+import { Container } from '../../components/ui/Container';
+import { TopNav } from '../../components/ui/TopNav';
+import Layout from '../../layouts/Layout.astro';
+import { formatDate, getPublishedPosts, readingTime } from '../../lib/blog';
+
+return new Response(null, { status: 404 });
+
+const posts = await getPublishedPosts();
+
+const summaries: PostSummary[] = posts.map((post) => ({
+	slug: post.id,
+	title: post.data.title,
+	description: post.data.description,
+	date: formatDate(post.data.date),
+	readingTime: readingTime(post.body),
+	tags: post.data.tags,
+}));
+---
+
+<Layout
+	title="Writing — Design by Duljek"
+	description="Notes on design, motion, and building for the web."
+>
+	<main class="flex min-h-dvh flex-col">
+		<Container className="my-auto py-10 sm:py-15">
+			<div class="flex flex-col gap-8">
+				<TopNav />
+				<header class="flex flex-col gap-1.5 px-3">
+					<h1 class="text-base font-medium text-stone-950">Writing</h1>
+					<p class="text-base text-stone-600">
+						Tips, tricks, and notes on design, motion, and building for the web.
+					</p>
+				</header>
+				{
+					summaries.length > 0 ? (
+						<PostList posts={summaries} client:load />
+					) : (
+						<p class="px-3 text-base text-stone-400">No posts yet — check back soon.</p>
+					)
+				}
+			</div>
+		</Container>
+	</main>
+</Layout>

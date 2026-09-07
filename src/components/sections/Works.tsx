@@ -1,10 +1,10 @@
 'use client';
 
 import { motion, useReducedMotion } from 'motion/react';
+import { works } from '../../lib/projects';
+import { fadeUp, staggerContainer, viewportOnce } from '../motion/variants';
 import { SectionHeading } from '../ui/SectionHeading';
 import { ProjectList } from './ProjectList';
-import { fadeUp, staggerContainer, viewportOnce } from '../motion/variants';
-import { works } from '../../lib/projects';
 
 export function Works() {
 	const reduceMotion = useReducedMotion();

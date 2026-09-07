@@ -9,64 +9,184 @@
 					"src": "/shots/nano/nano_1_1x.webp",
 					"width": 1440,
 					"height": 900,
-					"alt": "Nano AI security system"
+					"alt": "Nano threat detection",
+					"href": "https://dribbble.com/shots/27227630-Nano-Threat-Detection"
 				},
 				{
 					"src": "/shots/nano/nano_2_1x.webp",
 					"width": 1440,
 					"height": 900,
-					"alt": "Nano AI security system"
+					"alt": "Nano log parser AI",
+					"href": "https://dribbble.com/shots/27231502-Nano-Log-Parser-AI"
 				},
 				{
 					"src": "/shots/nano/nano_3_1x.webp",
 					"width": 1440,
 					"height": 900,
-					"alt": "Nano AI security system"
+					"alt": "Nano AI security assistant",
+					"href": "https://dribbble.com/shots/27219542-Nano-AI-Security-Assistant"
 				},
 				{
 					"src": "/shots/nano/nano_4_1x.webp",
 					"width": 1440,
 					"height": 900,
-					"alt": "Nano AI security system"
+					"alt": "Nano predictable pricing",
+					"href": "https://dribbble.com/shots/27235212-Nano-Predictable-Pricing"
 				}
 			]
 		},
-		{ "title": "MorvaHR", "date": "Nov 2025 - Jan 2026" },
+		{
+			"title": "MorvaHR",
+			"date": "Nov 2025 - Jan 2026",
+			"shots": [
+				{
+					"src": "/shots/morva_hr/morva_hr_1x.webp",
+					"srcSet": "/shots/morva_hr/morva_hr_1x.webp 1x, /shots/morva_hr/morva_hr_2x.webp 2x, /shots/morva_hr/morva_hr_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "MorvaHR"
+				}
+			]
+		},
 		{
 			"title": "Nova",
 			"date": "Sep - Nov 2025",
 			"shots": [
 				{
+					"src": "/shots/nova/nova_1s_1x.webp",
+					"srcSet": "/shots/nova/nova_1s_1x.webp 1x, /shots/nova/nova_1s_2x.webp 2x, /shots/nova/nova_1s_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova SaaS landing page",
+					"href": "https://dribbble.com/shots/26957762-Nova-SaaS-Landing-Page"
+				},
+				{
+					"src": "/shots/nova/nova_2s_1x.webp",
+					"srcSet": "/shots/nova/nova_2s_1x.webp 1x, /shots/nova/nova_2s_2x.webp 2x, /shots/nova/nova_2s_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova bento section",
+					"href": "https://dribbble.com/shots/26956900-Nova-Bento-Section"
+				},
+				{
+					"src": "/shots/nova/nova_3s_1x.webp",
+					"srcSet": "/shots/nova/nova_3s_1x.webp 1x, /shots/nova/nova_3s_2x.webp 2x, /shots/nova/nova_3s_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova pricing section",
+					"href": "https://dribbble.com/shots/26956938-Nova-Pricing-Section"
+				},
+				{
+					"src": "/shots/nova/nova_4s_1x.webp",
+					"srcSet": "/shots/nova/nova_4s_1x.webp 1x, /shots/nova/nova_4s_2x.webp 2x, /shots/nova/nova_4s_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova CTA footer section",
+					"href": "https://dribbble.com/shots/26956976-Nova-CTA-Footer-Section"
+				},
+				{
 					"src": "/shots/nova/nova_1_1x.webp",
 					"srcSet": "/shots/nova/nova_1_1x.webp 1x, /shots/nova/nova_1_2x.webp 2x, /shots/nova/nova_1_3x.webp 3x",
-					"width": 432,
-					"height": 310,
-					"alt": "Nova landing page",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova AI chatbot page",
 					"href": "https://dribbble.com/shots/26957164-Nova-AI-Chatbot-Page"
 				},
 				{
 					"src": "/shots/nova/nova_2_1x.webp",
 					"srcSet": "/shots/nova/nova_2_1x.webp 1x, /shots/nova/nova_2_2x.webp 2x, /shots/nova/nova_2_3x.webp 3x",
-					"width": 432,
-					"height": 310,
-					"alt": "Nova AI chatbot",
-					"href": "https://dribbble.com/shots/26957164-Nova-AI-Chatbot-Page"
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova AI chatbot response",
+					"href": "https://dribbble.com/shots/26957227-Nova-AI-Chatbot-Response"
 				},
 				{
 					"src": "/shots/nova/nova_3_1x.webp",
 					"srcSet": "/shots/nova/nova_3_1x.webp 1x, /shots/nova/nova_3_2x.webp 2x, /shots/nova/nova_3_3x.webp 3x",
-					"width": 432,
-					"height": 310,
-					"alt": "Nova dashboard",
-					"href": "https://dribbble.com/shots/26957164-Nova-AI-Chatbot-Page"
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova AI editor",
+					"href": "https://dribbble.com/shots/26957954-Nova-AI-Editor"
 				}
 			]
+		}
+	],
+	"pastWorks": [
+		{
+			"title": "GetHired",
+			"date": "March - May 2025",
+			"category": "product",
+			"href": "https://design-by-duljek.framer.website/works/gethired"
+		},
+		{
+			"title": "uTOIP Telkomsel",
+			"date": "Feb - Jun 2024",
+			"category": "product",
+			"shots": [
+				{
+					"src": "/shots/utoip/utoip_1_1x.webp",
+					"srcSet": "/shots/utoip/utoip_1_1x.webp 1x, /shots/utoip/utoip_1_2x.webp 2x, /shots/utoip/utoip_1_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "uTOIP Telkomsel",
+					"href": "https://design-by-duljek.framer.website/works/utoip"
+				},
+				{
+					"src": "/shots/utoip/utoip_2_1x.webp",
+					"srcSet": "/shots/utoip/utoip_2_1x.webp 1x, /shots/utoip/utoip_2_2x.webp 2x, /shots/utoip/utoip_2_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "uTOIP Telkomsel",
+					"href": "https://design-by-duljek.framer.website/works/utoip"
+				},
+				{
+					"src": "/shots/utoip/utoip_3_1x.webp",
+					"srcSet": "/shots/utoip/utoip_3_1x.webp 1x, /shots/utoip/utoip_3_2x.webp 2x, /shots/utoip/utoip_3_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "uTOIP Telkomsel",
+					"href": "https://design-by-duljek.framer.website/works/utoip"
+				}
+			]
+		},
+		{
+			"title": "Future Energy Summit (Futurest) 2024",
+			"date": "Jan - May 2024",
+			"category": "web",
+			"href": "https://frontend-futurest2024.vercel.app/"
+		},
+		{
+			"title": "Arkalearn",
+			"date": "Nov 2023 - Aug 2024",
+			"category": "web",
+			"href": "https://www.arkalearn.com/",
+			"previewImageScale": 0.8,
+			"previewImageHeight": 200
+		},
+		{
+			"title": "A Renewal Agent (ARA) 5.0",
+			"date": "Oct 2023 - Feb 2024",
+			"category": "web",
+			"href": "https://frontend-ara5.vercel.app/"
+		},
+		{
+			"title": "SRE ITS",
+			"date": "Aug - Dec 2023",
+			"category": "web",
+			"href": "https://www.sre-its.com/",
+			"previewImageScale": 0.8
+		},
+		{
+			"title": "CTF A Renewal Agent (ARA) 4.0",
+			"date": "Jan 2023",
+			"category": "product",
+			"href": "https://design-by-duljek.framer.website/works/ctfara-4"
 		}
 	],
 	"personalProjects": [
 		{
 			"title": "Nca Turns 24th",
-			"date": "March 2026 - Now",
+			"date": "A personal website I built as a birthday gift for my girlfriend's 24th",
 			"href": "https://ncaturns24.framer.website/"
 		}
 	]

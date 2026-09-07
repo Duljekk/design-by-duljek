@@ -1,7 +1,7 @@
 'use client';
 
-import { forwardRef, useState } from 'react';
 import type { InputHTMLAttributes, Ref, SubmitEvent } from 'react';
+import { forwardRef, useState } from 'react';
 
 interface Props {
 	isStreaming: boolean;

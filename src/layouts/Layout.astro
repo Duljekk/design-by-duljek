@@ -1,12 +1,22 @@
 ---
 import '../styles/global.css';
+import { DialKitRoot } from '../components/dial/DialKitRoot';
 
 interface Props {
 	title?: string;
 	description?: string;
+	/* Path to a social-preview image, resolved against the site URL. */
+	ogImage?: string;
 }
 
-const { title = 'Design by Duljek', description = 'Portfolio' } = Astro.props;
+const {
+	title = 'Design by Duljek',
+	description = 'Portfolio',
+	ogImage = '/og-default.png',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL(ogImage, Astro.site);
 ---
 
 <html lang="en">
@@ -17,8 +27,22 @@ const { title = 'Design by Duljek', description = 'Portfolio' } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<title>{title}</title>
+		<link rel="canonical" href={canonical} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Design by Duljek" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImageUrl} />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageUrl} />
 	</head>
 	<body>
 		<slot />
+		<DialKitRoot client:load />
 	</body>
 </html>

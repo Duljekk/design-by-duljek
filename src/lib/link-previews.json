@@ -5,8 +5,75 @@
 		"title": "Intelligent Fuel Procurement Platform | Fuel Me",
 		"description": "Stop overpaying for fuel. Fuel Me's AI-powered marketplace offers smart ordering, full visibility, and automated fuel deliveries. Book a demo today.",
 		"image": "/previews/og-3a9a666ae645.webp",
+		"imageWidth": 1200,
+		"imageHeight": 630,
 		"favicon": "/previews/icon-c6a3ebd6cf29.png",
-		"fetchedAt": "2026-08-20T19:01:47.462Z"
+		"fetchedAt": "2026-09-07T07:42:27.204Z"
+	},
+	"https://design-by-duljek.framer.website/works/gethired": {
+		"url": "https://design-by-duljek.framer.website/works/gethired",
+		"domain": "design-by-duljek.framer.website",
+		"title": "Duljek Portfolio's",
+		"description": "Made with Framer",
+		"favicon": "/previews/icon-d71c258c0ff4.png",
+		"fetchedAt": "2026-09-07T07:42:27.724Z"
+	},
+	"https://design-by-duljek.framer.website/works/utoip": {
+		"url": "https://design-by-duljek.framer.website/works/utoip",
+		"domain": "design-by-duljek.framer.website",
+		"title": "Duljek Portfolio's",
+		"description": "Made with Framer",
+		"favicon": "/previews/icon-d71c258c0ff4.png",
+		"fetchedAt": "2026-09-07T07:42:28.108Z"
+	},
+	"https://frontend-futurest2024.vercel.app/": {
+		"url": "https://frontend-futurest2024.vercel.app/",
+		"domain": "frontend-futurest2024.vercel.app",
+		"title": "FUTUREST 2024",
+		"description": "FUTUREST stands as Indonesia's grand stage for renewable energy, orchestrated by SRE ITS, igniting students's passion accross the nation to pioneer energy transformation through innovative exploration and strategic implementation.",
+		"image": "/previews/og-1ad0abebf6f4.webp",
+		"imageWidth": 1200,
+		"imageHeight": 630,
+		"favicon": "/previews/icon-4877dbbc0884.png",
+		"fetchedAt": "2026-09-07T07:42:29.562Z"
+	},
+	"https://www.arkalearn.com/": {
+		"url": "https://www.arkalearn.com/",
+		"domain": "arkalearn.com",
+		"title": "Belajar Bahasa Jepang untuk Kerja di Jepang | ArkaLearn",
+		"description": "Ingin kerja di Jepang? Cari tau cara kerja di Jepang, belajar bahasa Jepang sampai memenuhi syarat kerja ke Jepang di ArkaLearn — mulai dari N5 hingga N3, SSW, dan Mensetsu.",
+		"image": "/previews/og-c11ab29cdf9b.webp",
+		"imageWidth": 400,
+		"imageHeight": 400,
+		"favicon": "/previews/icon-848c38923dfc.ico",
+		"fetchedAt": "2026-09-07T07:42:30.675Z"
+	},
+	"https://frontend-ara5.vercel.app/": {
+		"url": "https://frontend-ara5.vercel.app/",
+		"domain": "frontend-ara5.vercel.app",
+		"title": "A Renewal Agent ITS",
+		"description": "ARA ITS (A Renewal Agent ITS) 5.0 adalah kegiatan yang diselenggarakan oleh HMIT (Himpunan Mahasiswa Teknologi Informasi) ITS periode 2023-2024 yang dimana event ini akan menjadi media untuk menyalurkan minat di bidang IT (teknologi informasi) bagi siswa SMA/SMK dan mahasiswa.",
+		"favicon": "/previews/icon-c0f77bdd51a2.ico",
+		"fetchedAt": "2026-09-07T07:42:31.229Z"
+	},
+	"https://www.sre-its.com/": {
+		"url": "https://www.sre-its.com/",
+		"domain": "sre-its.com",
+		"title": "SRE ITS",
+		"description": "SRE ITS exist to develop innovation, exchange ideas, and facilitate students as active learners in the Renewable Energy field.",
+		"image": "/previews/og-f9e127370cc0.webp",
+		"imageWidth": 525,
+		"imageHeight": 525,
+		"favicon": "/previews/icon-1852834f7666.ico",
+		"fetchedAt": "2026-09-07T07:42:31.967Z"
+	},
+	"https://design-by-duljek.framer.website/works/ctfara-4": {
+		"url": "https://design-by-duljek.framer.website/works/ctfara-4",
+		"domain": "design-by-duljek.framer.website",
+		"title": "Duljek Portfolio's",
+		"description": "Made with Framer",
+		"favicon": "/previews/icon-d71c258c0ff4.png",
+		"fetchedAt": "2026-09-07T07:42:32.364Z"
 	},
 	"https://ncaturns24.framer.website/": {
 		"url": "https://ncaturns24.framer.website/",
@@ -14,6 +81,6 @@
 		"title": "My Framer Site",
 		"description": "Made with Framer",
 		"favicon": "/previews/icon-d71c258c0ff4.png",
-		"fetchedAt": "2026-08-20T19:01:47.570Z"
+		"fetchedAt": "2026-09-07T07:42:33.453Z"
 	}
 }
