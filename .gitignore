@@ -35,3 +35,5 @@ pnpm-debug.log*
 /nano_*.zip
 /morva_hr/
 /morva_hr.zip
+/utoip_*/
+/utoip_*.zip

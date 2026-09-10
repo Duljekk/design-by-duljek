@@ -1,0 +1,18 @@
+# Design by Duljek
+
+> Portfolio of Abdul Zaki Syahrul Rahmat (Duljek) — Product Designer and Framer Developer at Morva Labs. He turns ideas into digital products, from shaping how they work and feel to building them with Framer and modern web technologies.
+
+## Site
+
+- [Home](https://design-by-duljek.site/): Single-page portfolio — hero, recent works at Morva Labs, past works, personal projects, and tools.
+
+## Profiles
+
+- [GitHub](https://github.com/Duljekk): Personal projects and code.
+- [LinkedIn](https://www.linkedin.com/in/abdulzakisr): Professional profile and experience.
+- [Instagram](https://www.instagram.com/abdulzakisr): Design work and process.
+
+## Contact
+
+- [Email](mailto:abdulzakisr@gmail.com): Direct contact for collaborations and inquiries.
+- [WhatsApp](https://wa.me/6282121254440): Message directly.

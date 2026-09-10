@@ -40,6 +40,11 @@ const FRAME_WIDTH = 432;
 const SEAM_OVERLAP = 1;
 const TRAVEL = FRAME_WIDTH - SEAM_OVERLAP;
 
+/* The ShotCard wrapper's outer width — must match `w-[464px]` below. Exported
+ * so ProjectList knows the shared card's width for shot projects without
+ * duplicating the constant. */
+export const SHOT_CARD_WIDTH = 464;
+
 /* Direction-aware slide variants. `custom` carries the travel direction
  * (+1 next, -1 previous); the incoming shot enters from the side it travels
  * from and the outgoing one leaves out the opposite side. */

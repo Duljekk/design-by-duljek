@@ -156,7 +156,8 @@ export const POST: APIRoute = async ({ request }) => {
 		return json({ error: 'The assistant is unavailable right now. Try again shortly.' }, 502);
 	}
 
-	return new Response(upstream.body.pipeThrough(extractTextStream()), {
+	const upstreamBody = upstream.body;
+	return new Response(upstreamBody.pipeThrough(extractTextStream()), {
 		headers: {
 			'Content-Type': 'text/plain; charset=utf-8',
 			'Cache-Control': 'no-store',

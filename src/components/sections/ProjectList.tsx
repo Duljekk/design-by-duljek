@@ -1,17 +1,17 @@
 'use client';
 
-import type { Variants } from 'motion/react';
+import type { Transition, Variants } from 'motion/react';
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from 'motion/react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import previewData from '../../lib/link-previews.json';
 import type { Project } from '../../lib/projects';
 import { useCanHover } from '../../lib/useCanHover';
 import { fadeUp, staggerContainer } from '../motion/variants';
 import type { LinkPreview } from '../ui/LinkPreviewCard';
-import { LinkPreviewCard } from '../ui/LinkPreviewCard';
+import { LinkPreviewCard, previewCardWidth } from '../ui/LinkPreviewCard';
 import { ProjectItem } from '../ui/ProjectItem';
-import { ShotCard } from '../ui/ShotCard';
+import { ShotCard, SHOT_CARD_WIDTH } from '../ui/ShotCard';
 
 const previews = previewData as Record<string, LinkPreview | undefined>;
 
@@ -94,6 +94,15 @@ interface Props {
 	itemVariants?: Variants;
 }
 
+/* The width of the card a project will show, so the incoming og:image can
+ * start its scale at the outgoing card's width. Preview cards win when a
+ * project carries both (same precedence as ProjectCardBody's render). */
+const cardWidthOf = (project: Project, preview?: LinkPreview): number => {
+	if (preview) return previewCardWidth(project.previewImageScale);
+	if (project.shots?.length) return SHOT_CARD_WIDTH;
+	return previewCardWidth();
+};
+
 /* One content layer inside the shared card. A layer on its way out is lifted
  * from flow, so the card's width/height warp is driven only by the incoming
  * body and the crossfade never waits on the outgoing one. AnimatePresence's
@@ -102,10 +111,15 @@ interface Props {
 function ProjectCardBody({
 	project,
 	preview,
+	imageMorph,
+	exitScaleRef,
 	reduceMotion,
 }: {
 	project: Project;
 	preview?: LinkPreview;
+	/* See `imageMorph` / `exitScaleRef` in ProjectList — passed through to the og:image. */
+	imageMorph?: { from: number; to: number; spring: Transition };
+	exitScaleRef?: RefObject<number>;
 	reduceMotion: boolean;
 }) {
 	const isPresent = useIsPresent();
@@ -113,12 +127,15 @@ function ProjectCardBody({
 	return (
 		<motion.div
 			/* `layout` here is not animating this layer — it is what makes Motion
-			 * counter-scale it against the shell's warp. The shell morphs via
-			 * scaleX/scaleY, and a child without its own layout node is stretched by
-			 * that scale for the whole spring and snaps back at the end: on a
-			 * 432 → 320 swap the shot image squashes ~25% horizontally and pops.
-			 * With `layout` the body stays at its true size and the shell simply
-			 * clips or reveals it. */
+			 * counter-scale it against the shell's warp, so the TEXT stays crisp at
+			 * true size while the frame morphs around it. The shell warps via
+			 * scaleX/scaleY, and a body without its own layout node is stretched by
+			 * that non-uniform scale for the whole spring — running text through it
+			 * reads as a wobble, and a 432 → 320 shot swap squashes ~25% and pops.
+			 * With `layout` the body holds its true size and the shell simply clips
+			 * or reveals it. The og:image is the one exception to the counter-scale:
+			 * it animates its own uniform scale (`imageMorph`) so it resizes WITH
+			 * the morph instead of sitting at final size under a warping frame. */
 			layout={reduceMotion ? false : 'position'}
 			className={isPresent ? undefined : 'absolute top-0 left-0'}
 			initial={reduceMotion ? false : { opacity: 0, filter: `blur(${CARD.body.blur}px)` }}
@@ -146,6 +163,8 @@ function ProjectCardBody({
 						preview={preview}
 						imageScale={project.previewImageScale}
 						imageBoxHeight={project.previewImageHeight}
+						imageMorph={imageMorph}
+						exitScaleRef={exitScaleRef}
 					/>
 				</a>
 			) : (
@@ -169,6 +188,18 @@ export function ProjectList({
 	const hoveredIndexRef = useRef<number | null>(null);
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const enterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	/* Width of the card on screen BEFORE the current one. Read while the new
+	 * body mounts (so its og:image can start scaling from the outgoing card's
+	 * width), then re-recorded in an effect — a render-time write would leak
+	 * the new width into StrictMode's second render pass and kill the morph. */
+	const prevCardWidthRef = useRef<number | null>(null);
+	/* Width factor the OUTGOING og:image scales toward when a row move pushes
+	 * it out: the incoming card's width over the outgoing's. Written during
+	 * render so it is fresh the moment Motion starts the exit at the commit.
+	 * Stable identity — the exiting body's frozen props still point here, so
+	 * its image reads `.current` live at exit-start (a value prop would be a
+	 * frozen stale one). 1 = no exit scale (close, first show, same width). */
+	const exitScaleRef = useRef(1);
 
 	const [active, setActive] = useState<number | null>(null);
 	const [anchor, setAnchor] = useState<number | null>(null);
@@ -254,6 +285,31 @@ export function ProjectList({
 	const activeProject = active === null ? null : items[active];
 	const preview = activeProject?.href ? previews[activeProject.href] : undefined;
 	const hasCard = Boolean(activeProject && (preview || activeProject.shots?.length));
+	const cardWidth = hasCard && activeProject ? cardWidthOf(activeProject, preview) : null;
+
+	/* The og:image morph — both directions of a row move, always uniform (width
+	 * and height together, aspect intact) and always on the shell's warp
+	 * spring, so the images track the frame's width exactly:
+	 *   incoming — starts at the outgoing card's width factor, settles to 1
+	 *   outgoing — scales toward the incoming card's width factor (exitScaleRef)
+	 * No morph on first show, reduced motion, or same-width swaps (1 = rest). */
+	const morphStart =
+		prevCardWidthRef.current && cardWidth ? prevCardWidthRef.current / cardWidth : 1;
+	exitScaleRef.current =
+		cardWidth && prevCardWidthRef.current ? cardWidth / prevCardWidthRef.current : 1;
+	const imageMorph = preview
+		? {
+				from: morphStart,
+				to: 1,
+				spring: (reduceMotion ? { duration: 0 } : CARD.warp) as Transition,
+			}
+		: undefined;
+
+	/* Records this render's card width for the NEXT morph — after the body
+	 * has mounted, so its og:image initial still read the outgoing width. */
+	useEffect(() => {
+		prevCardWidthRef.current = cardWidth;
+	});
 
 	const targetTop = (anchor ?? 0) - GAP;
 
@@ -344,6 +400,8 @@ export function ProjectList({
 										key={activeProject.title}
 										project={activeProject}
 										preview={preview}
+										imageMorph={imageMorph}
+										exitScaleRef={exitScaleRef}
 										reduceMotion={!!reduceMotion}
 									/>
 								</AnimatePresence>
