@@ -8,7 +8,7 @@
 ## Page
 
 - **Title:** Design by Duljek
-- **Description:** Abdul Zaki Syahrul Rahmat — Product Designer and Framer Developer at Morva Labs. Turning ideas into digital products, from how they work and feel to how they're built.
+- **Description:** Abdul Zaki Syahrul Rahmat, Product Designer and Framer Developer at Morva Labs. Turning ideas into digital products, from how they work and feel to how they're built.
 
 ---
 
