@@ -1,5 +1,6 @@
 import { motion, type Transition } from 'motion/react';
 import type { RefObject } from 'react';
+import { BlurImage } from './BlurImage';
 
 export interface LinkPreview {
 	url: string;
@@ -99,14 +100,11 @@ export function LinkPreviewCard({
 					}}
 					className="w-full overflow-hidden border-b border-stone-200 bg-stone-100"
 				>
-					<img
+					<BlurImage
 						src={preview.image}
 						alt=""
 						width={preview.imageWidth ?? 1200}
 						height={preview.imageHeight ?? 630}
-						loading="lazy"
-						decoding="async"
-						className="size-full object-cover"
 					/>
 				</motion.div>
 			)}

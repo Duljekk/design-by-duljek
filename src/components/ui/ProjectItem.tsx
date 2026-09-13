@@ -10,6 +10,10 @@ interface Props {
 	 * owned by a single morphing rectangle that ProjectList slides between
 	 * rows. Leaving the row's own bg off avoids doubling up the two. */
 	sharedHighlight?: boolean;
+	/* Touch only: rows whose card is opened by a press rather than a hover.
+	 * Undefined on hover pointers, where the row stays a passive target. */
+	onActivate?: () => void;
+	expanded?: boolean;
 }
 
 /* Presentational row only — the hover overlay is owned by ProjectList, which
@@ -23,6 +27,8 @@ export function ProjectItem({
 	active,
 	interactive = true,
 	sharedHighlight = false,
+	onActivate,
+	expanded,
 }: Props) {
 	const bg = sharedHighlight ? '' : `hover:bg-stone-100 ${active ? 'bg-stone-100' : ''}`;
 	const className = `group flex w-full items-center text-left rounded-xl py-2.5 pl-3 pr-3.5 transition-colors duration-200 ${bg}`;
@@ -63,7 +69,7 @@ export function ProjectItem({
 	}
 
 	return (
-		<button type="button" className={className}>
+		<button type="button" onClick={onActivate} aria-expanded={expanded} className={className}>
 			{body}
 		</button>
 	);

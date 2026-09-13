@@ -30,9 +30,19 @@ const previews = previewData as Record<string, LinkPreview | undefined>;
  *
  * Only one row is `active` at a time (a single index), so the highlight and
  * the card can never point at two projects simultaneously.
+ *
+ * ON TOUCH the same card is driven by presses instead of a pointer. A press on
+ * a shot row opens it, a press on the row again — or anywhere outside it, or
+ * Escape — closes it. Rows that link straight out are untouched: they stay
+ * plain links that open their site, exactly as they do today. The card also
+ * changes shape there, spanning the page width inside a 24px gutter with its
+ * height falling out of the shot's aspect ratio, and it opens BELOW the
+ * pressed row rather than above it — above is where the finger just was, and
+ * on a row near the top of the screen there is nothing above to open into.
  * ───────────────────────────────────────────────────────── */
 
-const GAP = 8; // px between a row's top edge and the card floating above it
+const GAP = 8; // px between the row and the card floating above (or, on touch, below) it
+const SCROLL_SETTLE = 80; // ms after a touch open before nudging the card into view
 const CLOSE_DELAY = 200; // ms grace so the pointer can cross into the card
 const ENTER_DELAY = 140; // ms before a row takes focus, so passing over rows to reach the card doesn't re-target
 
@@ -94,6 +104,12 @@ interface Props {
 	itemVariants?: Variants;
 }
 
+/* Which rows own a card on touch. A project with an `href` is a direct link
+ * and keeps its current behaviour — one press, the site opens — so only the
+ * shot-only projects become press-to-open. */
+const hasTouchCard = (project?: Project): boolean =>
+	Boolean(project && !project.href && project.shots?.length);
+
 /* The width of the card a project will show, so the incoming og:image can
  * start its scale at the outgoing card's width. Preview cards win when a
  * project carries both (same precedence as ProjectCardBody's render). */
@@ -114,6 +130,7 @@ function ProjectCardBody({
 	imageMorph,
 	exitScaleRef,
 	reduceMotion,
+	fluid,
 }: {
 	project: Project;
 	preview?: LinkPreview;
@@ -121,6 +138,8 @@ function ProjectCardBody({
 	imageMorph?: { from: number; to: number; spring: Transition };
 	exitScaleRef?: RefObject<number>;
 	reduceMotion: boolean;
+	/* Touch: the shot frame is sized by the card instead of the Figma width. */
+	fluid: boolean;
 }) {
 	const isPresent = useIsPresent();
 
@@ -168,7 +187,7 @@ function ProjectCardBody({
 					/>
 				</a>
 			) : (
-				project.shots && <ShotCard shots={project.shots} />
+				project.shots && <ShotCard shots={project.shots} fluid={fluid} />
 			)}
 		</motion.div>
 	);
@@ -255,6 +274,57 @@ export function ProjectList({
 		closeTimer.current = setTimeout(() => setActive(null), CLOSE_DELAY);
 	};
 
+	/* Touch's counterpart to hover: a press points the card at a row, and a
+	 * press on the row it is already pointing at puts it away. */
+	const toggle = (index: number) => {
+		if (active === index) setActive(null);
+		else pointAt(index);
+	};
+
+	/* Touch dismissal. A press outside the card closes it, as does Escape.
+	 * Presses on a row that owns a card are left alone — `toggle` is what
+	 * decides whether that press opens, moves, or closes the card, and closing
+	 * here first would make a press on the open row close then reopen it. */
+	useEffect(() => {
+		if (canHover || active === null) return;
+
+		const closeOnOutside = (event: PointerEvent) => {
+			const node = event.target as Node | null;
+			if (!node || cardRef.current?.contains(node)) return;
+
+			const row = itemRefs.current.findIndex((item) => item?.contains(node));
+			if (row !== -1 && hasTouchCard(items[row])) return;
+
+			setActive(null);
+		};
+
+		const closeOnEscape = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') setActive(null);
+		};
+
+		document.addEventListener('pointerdown', closeOnOutside);
+		document.addEventListener('keydown', closeOnEscape);
+		return () => {
+			document.removeEventListener('pointerdown', closeOnOutside);
+			document.removeEventListener('keydown', closeOnEscape);
+		};
+	}, [canHover, active, items]);
+
+	/* The card opens below the pressed row, so on a row near the bottom of the
+	 * screen it can land under the fold and read as nothing having happened.
+	 * `nearest` is a no-op when it is already fully visible. */
+	useEffect(() => {
+		if (canHover || active === null) return;
+
+		const timer = setTimeout(() => {
+			cardRef.current?.scrollIntoView({
+				block: 'nearest',
+				behavior: reduceMotion ? 'auto' : 'smooth',
+			});
+		}, SCROLL_SETTLE);
+		return () => clearTimeout(timer);
+	}, [canHover, active, reduceMotion]);
+
 	/* Deterministic hover target detection: resolve what's actually under the
 	 * pointer via elementFromPoint (honours the card's z-index/pointer-events,
 	 * which enter/leave events get wrong across the overlapping card). A row
@@ -284,7 +354,10 @@ export function ProjectList({
 
 	const activeProject = active === null ? null : items[active];
 	const preview = activeProject?.href ? previews[activeProject.href] : undefined;
-	const hasCard = Boolean(activeProject && (preview || activeProject.shots?.length));
+	const hasCard = Boolean(
+		activeProject &&
+			(canHover ? preview || activeProject.shots?.length : hasTouchCard(activeProject)),
+	);
 	const cardWidth = hasCard && activeProject ? cardWidthOf(activeProject, preview) : null;
 
 	/* The og:image morph — both directions of a row move, always uniform (width
@@ -311,14 +384,18 @@ export function ProjectList({
 		prevCardWidthRef.current = cardWidth;
 	});
 
-	const targetTop = (anchor ?? 0) - GAP;
+	/* Hover hangs the card above the row; touch drops it below (see the
+	 * storyboard). Either way it is pinned by the edge that has to hold a
+	 * steady GAP from the row, so its height can change without it moving. */
+	const below = !canHover;
+	const targetTop = below ? (anchor ?? 0) + anchorHeight + GAP : (anchor ?? 0) - GAP;
 
 	return (
 		<motion.div
 			className="relative"
 			variants={containerVariants}
-			onPointerLeave={scheduleClose}
-			onPointerMove={handlePointerMove}
+			onPointerLeave={canHover ? scheduleClose : undefined}
+			onPointerMove={canHover ? handlePointerMove : undefined}
 		>
 			{/* Single highlight rectangle shared by every row — it slides Y and
 			 * warps its height to sit behind the active row instead of each row
@@ -326,7 +403,7 @@ export function ProjectList({
 			 * gets its own stacking context (z-10) so text paints on top. */}
 			{MORPH_HIGHLIGHT && (
 				<AnimatePresence>
-					{canHover && active !== null && (
+					{active !== null && (
 						<motion.div
 							aria-hidden="true"
 							className="pointer-events-none absolute inset-x-0 top-0 z-0 rounded-xl bg-stone-100"
@@ -351,8 +428,8 @@ export function ProjectList({
 							itemRefs.current[index] = element;
 						}}
 						variants={itemVariants}
-						onFocus={() => pointAt(index)}
-						onBlur={scheduleClose}
+						onFocus={canHover ? () => pointAt(index) : undefined}
+						onBlur={canHover ? scheduleClose : undefined}
 					>
 						<ProjectItem
 							title={item.title}
@@ -361,30 +438,36 @@ export function ProjectList({
 							active={active === index}
 							interactive={Boolean(item.href || item.shots?.length)}
 							sharedHighlight={MORPH_HIGHLIGHT}
+							onActivate={!canHover && hasTouchCard(item) ? () => toggle(index) : undefined}
+							expanded={!canHover && hasTouchCard(item) ? active === index : undefined}
 						/>
 					</motion.div>
 				))}
 			</div>
 
 			<AnimatePresence>
-				{canHover && hasCard && activeProject && (
+				{hasCard && activeProject && (
 					<motion.div
 						ref={cardRef}
-						className="pointer-events-auto absolute left-0 top-0 z-20"
+						/* Touch: `inset-x-3` inside the page's own `px-3` gutter puts the
+						   card's edges 24px off the viewport, flush with the row title
+						   above it. Hover keeps the card at its own content width. */
+						className={`pointer-events-auto absolute top-0 z-20 ${below ? 'inset-x-3' : 'left-0'}`}
 						initial={{ y: targetTop + CARD.hiddenY, opacity: 0 }}
 						animate={{ y: targetTop, opacity: 1 }}
 						exit={{ y: targetTop + CARD.hiddenY, opacity: 0 }}
 						transition={reduceMotion ? { duration: 0 } : { y: CARD.travel, default: CARD.fade }}
 					>
-						{/* The card hangs above a zero-height anchor line and is pinned by
-						    its BOTTOM edge — the edge that has to stay a steady GAP above the
-						    row. A `-translate-y-full` lift cannot do that job: it resolves
-						    against the card's own height, and Motion's layout warp snaps the
-						    real layout box to the new size on the first frame (only the visual
-						    scale springs), so the lift would jump the whole card the instant a
-						    taller or shorter body mounted. `bottom-0` against a zero-height
-						    parent is height-independent, so only the top edge travels. */}
-						<div className="absolute bottom-0 left-0">
+						{/* The card hangs off a zero-height anchor line and is pinned by the
+						    edge that has to stay a steady GAP from the row — its BOTTOM edge
+						    above the row, its TOP edge below it. A `-translate-y-full` lift
+						    cannot do the hover job: it resolves against the card's own height,
+						    and Motion's layout warp snaps the real layout box to the new size
+						    on the first frame (only the visual scale springs), so the lift
+						    would jump the whole card the instant a taller or shorter body
+						    mounted. Pinning against a zero-height parent is
+						    height-independent, so only the free edge travels. */}
+						<div className={`absolute ${below ? 'inset-x-0 top-0' : 'bottom-0 left-0'}`}>
 							<motion.div
 								layout={!reduceMotion}
 								transition={reduceMotion ? { duration: 0 } : CARD.warp}
@@ -403,13 +486,16 @@ export function ProjectList({
 										imageMorph={imageMorph}
 										exitScaleRef={exitScaleRef}
 										reduceMotion={!!reduceMotion}
+										fluid={below}
 									/>
 								</AnimatePresence>
 							</motion.div>
 							{/* Invisible strip below the card that covers the GAP, so moving
 							 * the pointer up from the active row lands on the card instead of
-							 * crossing the row above and re-targeting it. */}
-							<div aria-hidden="true" className="absolute top-full h-4 w-full" />
+							 * crossing the row above and re-targeting it. Hover only — there
+							 * is no pointer to shepherd across the gap on touch, and below the
+							 * row the strip would sit over the next row's press target. */}
+							{!below && <div aria-hidden="true" className="absolute top-full h-4 w-full" />}
 						</div>
 					</motion.div>
 				)}

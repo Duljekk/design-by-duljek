@@ -8,7 +8,8 @@
 	"scripts": {
 		"dev": "astro dev",
 		"link-previews": "node scripts/fetch-link-previews.mjs",
-		"prebuild": "npm run link-previews",
+		"placeholders": "node scripts/generate-placeholders.mjs",
+		"prebuild": "npm run link-previews && npm run placeholders",
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
