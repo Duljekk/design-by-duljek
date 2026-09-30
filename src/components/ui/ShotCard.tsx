@@ -14,6 +14,7 @@ import {
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react';
 import type { Shot } from '../../lib/projects';
 import { BLUR_UP, BlurImage, type BlurUpTuning } from './BlurImage';
+import type { LightboxRequest } from './ShotLightbox';
 
 interface Props {
 	shots: Shot[];
@@ -21,6 +22,11 @@ interface Props {
 	 * full page width minus the gutter) rather than the fixed Figma width, and
 	 * the frame's height follows from the shot's own aspect ratio. */
 	fluid?: boolean;
+	/* Opens an `expandable` shot's lightbox. The lightbox lives above the card
+	 * (the card closes when the pointer leaves the list, the lightbox must not),
+	 * and `expandedSrc` is the shot it currently has lifted off the card. */
+	onExpand?: (request: LightboxRequest) => void;
+	expandedSrc?: string | null;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -179,7 +185,7 @@ const INDICATOR = {
  *   next     → new shot enters from the right, moving left
  *   previous → new shot enters from the left, moving right
  * Inactive dots lighten to stone-300 on hover. */
-export function ShotCard({ shots, fluid = false }: Props) {
+export function ShotCard({ shots, fluid = false, onExpand, expandedSrc = null }: Props) {
 	const reduceMotion = useReducedMotion();
 	/* The strip (see stepStrip) and the shot it is springing to.
 	 *
@@ -226,12 +232,12 @@ export function ShotCard({ shots, fluid = false }: Props) {
 	 * current index, so any change — auto or manual — resets the full 4s. */
 	// biome-ignore lint/correctness/useExhaustiveDependencies: `index` is unused in the body but deliberately kept as a dep so manual navigation (goTo) restarts the 5s timer, not just auto-advance.
 	useEffect(() => {
-		if (shots.length <= 1 || reduceMotion) return;
+		if (shots.length <= 1 || reduceMotion || expandedSrc) return;
 		const timer = setInterval(() => {
 			setStrip((prev) => stepStrip(prev, (targetOf(prev).shot + 1) % shots.length, 1));
 		}, AUTO_ADVANCE_MS);
 		return () => clearInterval(timer);
-	}, [shots.length, index, reduceMotion]);
+	}, [shots.length, index, reduceMotion, expandedSrc]);
 
 	/* In `fluid` mode the frame width is set by the container, so a slot can't
 	 * be a constant: it is measured off the frame and re-measured on
@@ -323,7 +329,26 @@ export function ShotCard({ shots, fluid = false }: Props) {
 								z={layer.id}
 								inert={layer.id !== strip.targetId}
 							>
-								{shot.href ? (
+								{shot.expandable ? (
+									<button
+										type="button"
+										aria-label={`Enlarge: ${shot.alt}`}
+										aria-haspopup="dialog"
+										onClick={(event) => onExpand?.({ shot, source: event.currentTarget })}
+										className={`block size-full cursor-zoom-in ${
+											expandedSrc === shot.src ? 'invisible' : ''
+										}`}
+									>
+										<BlurImage
+											src={shot.src}
+											srcSet={shot.srcSet}
+											alt=""
+											width={shot.width}
+											height={shot.height}
+											tuning={blurUp}
+										/>
+									</button>
+								) : shot.href ? (
 									<a
 										href={shot.href}
 										target="_blank"
@@ -381,7 +406,11 @@ export function ShotCard({ shots, fluid = false }: Props) {
 				</div>
 
 				{shots.length > 1 && (
-					<div className="absolute bottom-[31px] left-1/2 flex -translate-x-1/2 items-center">
+					<div
+						className={`absolute bottom-[31px] left-1/2 flex -translate-x-1/2 items-center transition-opacity duration-200 ease-out ${
+							expandedSrc ? 'opacity-0' : 'opacity-100'
+						}`}
+					>
 						{shots.map((shot, i) => {
 							const active = i === index;
 							return (

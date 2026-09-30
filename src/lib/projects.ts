@@ -7,6 +7,10 @@ export interface Shot {
 	height: number;
 	alt: string;
 	href?: string;
+	/* A shot with no `href` is locked. `expandable` makes it open in a lightbox
+	 * instead, showing `full` (a higher-res file) when there is one. */
+	expandable?: boolean;
+	full?: string;
 }
 
 /* Past Works are split across a tab strip; every entry there carries one. */

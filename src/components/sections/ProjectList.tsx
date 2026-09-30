@@ -1,5 +1,6 @@
 'use client';
 
+import { useDialKit } from 'dialkit';
 import type { Transition, Variants } from 'motion/react';
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from 'motion/react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
@@ -12,6 +13,7 @@ import type { LinkPreview } from '../ui/LinkPreviewCard';
 import { LinkPreviewCard, previewCardWidth } from '../ui/LinkPreviewCard';
 import { ProjectItem } from '../ui/ProjectItem';
 import { ShotCard, SHOT_CARD_WIDTH } from '../ui/ShotCard';
+import { type LightboxRequest, ShotLightbox } from '../ui/ShotLightbox';
 
 const previews = previewData as Record<string, LinkPreview | undefined>;
 
@@ -131,6 +133,8 @@ function ProjectCardBody({
 	exitScaleRef,
 	reduceMotion,
 	fluid,
+	onExpand,
+	expandedSrc,
 }: {
 	project: Project;
 	preview?: LinkPreview;
@@ -140,6 +144,8 @@ function ProjectCardBody({
 	reduceMotion: boolean;
 	/* Touch: the shot frame is sized by the card instead of the Figma width. */
 	fluid: boolean;
+	onExpand: (request: LightboxRequest) => void;
+	expandedSrc: string | null;
 }) {
 	const isPresent = useIsPresent();
 
@@ -187,7 +193,14 @@ function ProjectCardBody({
 					/>
 				</a>
 			) : (
-				project.shots && <ShotCard shots={project.shots} fluid={fluid} />
+				project.shots && (
+					<ShotCard
+						shots={project.shots}
+						fluid={fluid}
+						onExpand={onExpand}
+						expandedSrc={expandedSrc}
+					/>
+				)
 			)}
 		</motion.div>
 	);
@@ -219,6 +232,20 @@ export function ProjectList({
 	 * its image reads `.current` live at exit-start (a value prop would be a
 	 * frozen stale one). 1 = no exit scale (close, first show, same width). */
 	const exitScaleRef = useRef(1);
+
+	/* The lightbox is owned here, not by the ShotCard that opens it: the card
+	 * unmounts when the pointer leaves the list, and the lightbox has to outlive
+	 * that. The ref mirrors it for the timers and document listeners below,
+	 * which must not close the card out from under an open lightbox. */
+	const [lightbox, setLightbox] = useState<LightboxRequest | null>(null);
+	const lightboxOpenRef = useRef(false);
+
+	/* The shot's morph out to its fit and back onto its card. Critically damped
+	 * (bounce 0) like the card's own springs, a touch slower since it crosses
+	 * the whole screen. */
+	const lightboxDial = useDialKit('Shot Lightbox', {
+		travel: { type: 'spring', visualDuration: 0.5, bounce: 0 },
+	});
 
 	const [active, setActive] = useState<number | null>(null);
 	const [anchor, setAnchor] = useState<number | null>(null);
@@ -264,6 +291,7 @@ export function ProjectList({
 	};
 
 	const scheduleClose = () => {
+		if (lightboxOpenRef.current) return;
 		cancelPointAt();
 		/* Forget the last-hovered row. Without this, re-entering the SAME row
 		 * fails the `hoveredIndexRef !== index` guard in the move handler, so it
@@ -276,6 +304,37 @@ export function ProjectList({
 
 	/* Touch's counterpart to hover: a press points the card at a row, and a
 	 * press on the row it is already pointing at puts it away. */
+	const openLightbox = (request: LightboxRequest) => {
+		lightboxOpenRef.current = true;
+		cancelPointAt();
+		if (closeTimer.current) {
+			clearTimeout(closeTimer.current);
+			closeTimer.current = null;
+		}
+		setLightbox(request);
+	};
+
+	/* The shot has landed back on its card, and the card stays open under it.
+	 * The lightbox swallowed the pointer's leave, so nothing would ever close
+	 * the card if the pointer is now elsewhere: the first move after closing
+	 * decides, keeping the card when it is still over the list or the card. */
+	const closeLightbox = () => {
+		const source = lightbox?.source;
+		lightboxOpenRef.current = false;
+		setLightbox(null);
+		requestAnimationFrame(() => source?.focus({ preventScroll: true }));
+
+		if (!canHover) return;
+		document.addEventListener(
+			'pointermove',
+			(event) => {
+				const under = document.elementFromPoint(event.clientX, event.clientY);
+				if (!under || !listRef.current?.parentElement?.contains(under)) scheduleClose();
+			},
+			{ once: true },
+		);
+	};
+
 	const toggle = (index: number) => {
 		if (active === index) setActive(null);
 		else pointAt(index);
@@ -290,7 +349,7 @@ export function ProjectList({
 
 		const closeOnOutside = (event: PointerEvent) => {
 			const node = event.target as Node | null;
-			if (!node || cardRef.current?.contains(node)) return;
+			if (lightboxOpenRef.current || !node || cardRef.current?.contains(node)) return;
 
 			const row = itemRefs.current.findIndex((item) => item?.contains(node));
 			if (row !== -1 && hasTouchCard(items[row])) return;
@@ -299,7 +358,7 @@ export function ProjectList({
 		};
 
 		const closeOnEscape = (event: KeyboardEvent) => {
-			if (event.key === 'Escape') setActive(null);
+			if (event.key === 'Escape' && !lightboxOpenRef.current) setActive(null);
 		};
 
 		document.addEventListener('pointerdown', closeOnOutside);
@@ -487,6 +546,8 @@ export function ProjectList({
 										exitScaleRef={exitScaleRef}
 										reduceMotion={!!reduceMotion}
 										fluid={below}
+										onExpand={openLightbox}
+										expandedSrc={lightbox?.shot.src ?? null}
 									/>
 								</AnimatePresence>
 							</motion.div>
@@ -500,6 +561,12 @@ export function ProjectList({
 					</motion.div>
 				)}
 			</AnimatePresence>
+
+			<ShotLightbox
+				request={lightbox}
+				travel={lightboxDial.travel as Transition}
+				onClosed={closeLightbox}
+			/>
 		</motion.div>
 	);
 }

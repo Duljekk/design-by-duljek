@@ -109,6 +109,57 @@
 					"href": "https://dribbble.com/shots/26957954-Nova-AI-Editor"
 				}
 			]
+		},
+		{
+			"title": "Explorations",
+			"date": "Sep 2025 - Now",
+			"shots": [
+				{
+					"src": "/shots/explorations/explorations_1_1x.webp",
+					"srcSet": "/shots/explorations/explorations_1_1x.webp 1x, /shots/explorations/explorations_1_2x.webp 2x, /shots/explorations/explorations_1_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nano landing page hero",
+					"expandable": true,
+					"full": "/shots/explorations/explorations_1_2x.webp"
+				},
+				{
+					"src": "/shots/explorations/explorations_2_1x.webp",
+					"srcSet": "/shots/explorations/explorations_2_1x.webp 1x, /shots/explorations/explorations_2_2x.webp 2x, /shots/explorations/explorations_2_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nano landing page hero isometric view",
+					"expandable": true,
+					"full": "/shots/explorations/explorations_2_2x.webp"
+				},
+				{
+					"src": "/shots/explorations/explorations_3_1x.webp",
+					"srcSet": "/shots/explorations/explorations_3_1x.webp 1x, /shots/explorations/explorations_3_2x.webp 2x, /shots/explorations/explorations_3_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova flashcard generation",
+					"expandable": true,
+					"full": "/shots/explorations/explorations_3_2x.webp"
+				},
+				{
+					"src": "/shots/explorations/explorations_4_1x.webp",
+					"srcSet": "/shots/explorations/explorations_4_1x.webp 1x, /shots/explorations/explorations_4_2x.webp 2x, /shots/explorations/explorations_4_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova chat with reasoning steps",
+					"expandable": true,
+					"full": "/shots/explorations/explorations_4_2x.webp"
+				},
+				{
+					"src": "/shots/explorations/explorations_5_1x.webp",
+					"srcSet": "/shots/explorations/explorations_5_1x.webp 1x, /shots/explorations/explorations_5_2x.webp 2x, /shots/explorations/explorations_5_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "Nova chat options menu",
+					"expandable": true,
+					"full": "/shots/explorations/explorations_5_2x.webp"
+				}
+			]
 		}
 	],
 	"pastWorks": [
