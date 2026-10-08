@@ -1,6 +1,20 @@
 {
 	"works": [
-		{ "title": "Fuel Me", "date": "March 2026 - Now", "href": "https://fuel.me" },
+		{
+			"title": "HireWise",
+			"date": "Sep 2026 - Now",
+			"shots": [
+				{
+					"src": "/shots/hirewise/hirewise_1_1x.webp",
+					"srcSet": "/shots/hirewise/hirewise_1_1x.webp 1x, /shots/hirewise/hirewise_1_2x.webp 2x, /shots/hirewise/hirewise_1_3x.webp 3x",
+					"width": 1440,
+					"height": 900,
+					"alt": "HireWise landing page",
+					"href": "https://dribbble.com/shots/27792976-HireWise-Homepage"
+				}
+			]
+		},
+		{ "title": "Fuel Me", "date": "March - Sep 2026", "href": "https://fuel.me" },
 		{
 			"title": "Nano",
 			"date": "Feb 2026",
